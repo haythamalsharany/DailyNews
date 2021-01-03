@@ -1,6 +1,8 @@
 package com.alsharany.dailynews
 
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,10 @@ import java.util.*
 
 private val TAP_INDEX="IndexOfTap"
 class GeneralNewsList : Fragment() {
+    interface Callbacks{
+        fun onNewsClicked(newsId:Int)
+    }
+    private var callbacks: Callbacks? = null
     private lateinit var newsViewModel: NewsViewModel
     private lateinit var typeViewModel: TypeViewModel
     private lateinit var categoryViewModel: CategoryViewModel
@@ -27,6 +34,11 @@ class GeneralNewsList : Fragment() {
     var tabIndex:Int = 0
     private var adapter = NewsAdapter(emptyList())
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -83,7 +95,9 @@ class GeneralNewsList : Fragment() {
         val titleTextView = view.findViewById(R.id.title) as TextView
         val contentTextView = view.findViewById(R.id.content_part) as TextView
         val dateTextView = view.findViewById(R.id.date) as TextView
-
+       init {
+           view.setOnClickListener(this)
+       }
         var news=News()
         fun bindData(news:News){
             this.news=news
@@ -103,10 +117,17 @@ class GeneralNewsList : Fragment() {
             return stringDate
         }
 
-
         override fun onClick(v: View?) {
 
+                Toast.makeText(requireContext(),"onclick ",Toast.LENGTH_SHORT).show()
+               val intent=Intent(activity,NewsDetailsActivity::class.java)
+            intent.putExtra("NEWSID",this.news.newsId)
+            startActivity(intent)
+
+
         }
+
+
     }
     private inner class NewsAdapter(val newsList:List<News>):RecyclerView.Adapter<NewsHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsHolder {
@@ -129,6 +150,10 @@ class GeneralNewsList : Fragment() {
             return newsList.size
         }
 
+    }
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     }

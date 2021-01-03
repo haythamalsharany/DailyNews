@@ -2,6 +2,7 @@ package com.alsharany.dailynews
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alsharany.dailynews.api.NewsApi
 
@@ -31,6 +32,24 @@ var newsApi:NewsApi
     fun fetchNews(): MutableLiveData<List<News>>{
         return fetchNewsMetaData(newsApi.fetchNews())
 
+    }
+    fun fetchSingleNews(newsId:Int):LiveData<News>{
+        val detailsResponseLiveData: MutableLiveData<News> = MutableLiveData()
+        val newsDetailsPageRequest: Call<List<News>> = newsApi.fetchSingleNews(newsId)
+        newsDetailsPageRequest.enqueue(object :Callback<List<News>>{
+            override fun onResponse(call: Call<List<News>>, response: Response<List<News>>) {
+                var newsDetailsResponse = response.body()
+                detailsResponseLiveData.value= newsDetailsResponse?.get(0)
+                    ?: News()
+                Log.d("news Details", newsDetailsResponse?.get(0)?.details.toString())
+            }
+
+            override fun onFailure(call:Call<List<News>> , t: Throwable) {
+                Log.d("news Details failed",t?.message)
+            }
+
+        })
+        return detailsResponseLiveData
     }
     fun fetchNewsByCategory(CategoryId:Int): MutableLiveData<List<News>>{
         return fetchNewsMetaData(newsApi.fetchNewsByCategory(CategoryId))
@@ -91,3 +110,4 @@ var newsApi:NewsApi
        return responseLiveData
     }
 }
+

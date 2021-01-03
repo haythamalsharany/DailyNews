@@ -10,8 +10,10 @@ import retrofit2.http.Url
 
 interface NewsApi {
 
-    @GET("news_api.php?categoryId=1")
+    @GET("news_api.php")
     fun fetchNews(): Call<List<News>>
+    @GET("news_api.php?")
+    fun fetchSingleNews(@Query("newsId") query: Int): Call<List<News>>
     @GET("news_api.php?")
     fun fetchNewsByCategory(@Query("categoryId") query: Int): Call<List<News>>
 

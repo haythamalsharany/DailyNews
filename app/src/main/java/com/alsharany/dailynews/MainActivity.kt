@@ -3,13 +3,14 @@ package com.alsharany.dailynews
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()  {
 
     lateinit var tabLayout: TabLayout
     lateinit var viewPager: ViewPager2
@@ -57,4 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         }.attach()
 
-}}
+}
+
+
+}
